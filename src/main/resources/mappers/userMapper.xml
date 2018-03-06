@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nfjd.mapper.UserMapper" >
+  <resultMap id="userMap" type="com.nfjd.model.UserModel" >
+    
+    <result column="login_name" property="account"  />
+    <result column="pwd" property="pwd"  />
+  </resultMap>
+<select id="getUser" resultMap="userMap">
+   select   * from  user  
+</select>
+
+
+</mapper>

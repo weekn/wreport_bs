@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.nfjd.mapper.TouristMapper" >
+<resultMap id="MapValueModel" type="com.nfjd.model.MapValueModel" >
+  <result column="name" property="name"  />
+  <result column="value" property="value"  />
+</resultMap>
+
+<resultMap id="TouristModel" type="com.nfjd.model.TouristModel" >
+  <result column="msisdn" property="msisdn"  />
+  <result column="statist_month" property="statist_month"  />
+  <result column="cmcc_prov_prvd_id" property="cmcc_prov_prvd_id"  />
+  <result column="ascription" property="ascription"  />
+  <result column="gender" property="gender"  />
+  <result column="age" property="age"  />
+</resultMap>
+
+<select id="getSpotsRegionHot" resultMap="MapValueModel">
+   select city_nm as name, sum(total_tourist) as value from test_3  where cmcc_prov_prvd_id=#{province} group by city_nm
+</select>
+
+<select id="getSpotsHot" resultMap="MapValueModel">
+   select scenic_name as name ,sum(total_tourist) as value from test_3 
+   <where>
+	   cmcc_prov_prvd_id=#{province} 
+	   group by scenic_name  
+	   ORDER BY value desc
+	   limit #{num}
+   </where>
+  
+</select>
+
+<select id="getProfileGender" resultMap="MapValueModel">
+   select gender as name,sum(total_tourist)as value from test_3  where cmcc_prov_prvd_id=#{province} group by gender
+</select>
+
+<select id="getProfileAge" resultMap="MapValueModel">
+   select age_stage as name,sum(total_tourist)as value from test_3 where cmcc_prov_prvd_id=#{province} group by age_stage
+</select>
+<select id="getTourists" resultMap="TouristModel">
+	select * from visual_st_cenic_tour_table_info where cmcc_prov_prvd_id=#{province} limit #{start},#{num}
+</select>
+<select id="geCountTourists" resultType="java.lang.Integer">
+	select count(*) from visual_st_cenic_tour_table_info where cmcc_prov_prvd_id=#{province} 
+</select>
+</mapper>
