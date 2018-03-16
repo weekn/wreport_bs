@@ -1,4 +1,4 @@
-package com.nfjd;
+package weekn.wreport;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -18,7 +18,7 @@ import org.springframework.web.filter.CorsFilter;
 @RestController
 @EnableAutoConfiguration
 @SpringBootApplication
-@MapperScan("com.nfjd.mapper")
+@MapperScan("weekn.wreport.mapper")
 public class Application  implements EmbeddedServletContainerCustomizer {  
 	 @RequestMapping("/weekn")
      String home() {
