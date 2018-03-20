@@ -45,20 +45,20 @@ public class ReportController {
 	
 	}
 	
-	/**
-	 * 获得项目project
-	 */
-	
-	@Autowired
-	private ProjectMapper mapper;
-	@RequestMapping(value = "/project", method = RequestMethod.GET)
-	public ResponseModel getProject() {// POST /session # 创建新的会话（登录）
-		System.out.println("ReportController-getProject");
-		ResponseModel response=new ResponseModel();
-		
-		response.setResponse(mapper.getProject());
-		
-		return  response;
-	
-	}
+//	/**
+//	 * 获得项目project
+//	 */
+//	
+//	@Autowired
+//	private ProjectMapper mapper;
+//	@RequestMapping(value = "/project", method = RequestMethod.GET)
+//	public ResponseModel getProject() {// POST /session # 创建新的会话（登录）
+//		System.out.println("ReportController-getProject");
+//		ResponseModel response=new ResponseModel();
+//		
+//		response.setResponse(mapper.getProject());
+//		
+//		return  response;
+//	
+//	}
 }

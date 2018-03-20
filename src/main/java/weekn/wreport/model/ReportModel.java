@@ -12,14 +12,9 @@ public class ReportModel {
 	private String problem;
 	private String plan;
 	private float rate;    //'项目进度'
-	private List<ReportModel> sub;
 	
-	public List<ReportModel> getSub() {
-		return sub;
-	}
-	public void setSub(List<ReportModel> sub) {
-		this.sub = sub;
-	}
+	
+	
 	public Integer getId() {
 		return id;
 	}

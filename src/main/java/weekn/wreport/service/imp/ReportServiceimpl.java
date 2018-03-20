@@ -32,7 +32,7 @@ public class ReportServiceimpl implements ReportService{
 	}
 
 	@Override
-	public List<ReportModel> getReportWithUser(String username) {
+	public List<ProjectModel> getReportWithUser(String username) {
 		Integer userid=1;
 		Long time=(long) 100000;
 		List<ReportModel> report_list=report_mapper.getReportWithUser(userid,time);
@@ -42,7 +42,7 @@ public class ReportServiceimpl implements ReportService{
 			ReportModel  report=it.next();
 			//report
 		}
-		return report_mapper.getReportWithUser(userid,time);
+		return project_list;
 	}
 
 	@Override
