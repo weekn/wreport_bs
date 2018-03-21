@@ -46,5 +46,19 @@ public class ProjectController {
 	
 	}
 	
+	/**
+	 * 删除项目
+	 */
+	@RequestMapping(value = "/project/{id}", method = RequestMethod.DELETE)
+	public ResponseModel deleteProject(@PathVariable String id) {
+		System.out.println("ProjectController-deleteProject--"+id);
+		ResponseModel response=new ResponseModel();
+		
+		response.setResponse(project_service.deleteProject(Integer.parseInt(id)));
+		
+		return  response;
+	
+	}
+	
 	
 }

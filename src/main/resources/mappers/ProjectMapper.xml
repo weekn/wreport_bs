@@ -85,5 +85,18 @@
 	<insert id="addProject" parameterType="weekn.wreport.model.ProjectModel">
 		insert into project(name,level,up_id,team_id) values (#{name}, #{level}, #{up_id}, #{team_id})
 	</insert>
+	
+	<delete id="deleteProject">
+		delete from project  where id in (
+		select id from 
+			(select * from project  where 
+					id in 
+				(select id from project  where id=#{id} or up_id=#{id} )   
+					or up_id in 
+				(select id from project  where id=#{id} or up_id=#{id}) 
+			)p
+		)
+
+	</delete>
 
 </mapper>

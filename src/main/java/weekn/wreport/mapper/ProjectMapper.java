@@ -16,4 +16,6 @@ public interface  ProjectMapper {
 	public List<ProjectModel> getRunningProject();
 	
 	public void addProject(ProjectModel project);
+	
+	public void deleteProject(@Param("id") int id);
 }

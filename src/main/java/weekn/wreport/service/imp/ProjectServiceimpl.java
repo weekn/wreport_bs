@@ -32,6 +32,11 @@ public class ProjectServiceimpl {
 		project_mapper.addProject(pro);
 		return project_mapper.getRunningProject();
 	}
+	
+	public List<ProjectModel> deleteProject(int id) {
+		project_mapper.deleteProject(id);
+		return project_mapper.getRunningProject();
+	}
 
 	
 
