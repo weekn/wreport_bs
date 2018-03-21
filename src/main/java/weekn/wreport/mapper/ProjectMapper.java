@@ -14,4 +14,6 @@ public interface  ProjectMapper {
 	public List<ProjectModel> getProject();
 	
 	public List<ProjectModel> getRunningProject();
+	
+	public void addProject(ProjectModel project);
 }

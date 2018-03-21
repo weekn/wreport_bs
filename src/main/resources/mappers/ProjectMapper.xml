@@ -76,10 +76,14 @@
 		select p0.name as name0,p0.id as id0 ,p1.name as name1,p1.id as id1, p2.name
 		as name2,p2.id as id2
 		from project p0
-		LEFT join project p1 on p0.id = p1.up_0_id and p1.level=1
-		LEFT join project p2 on p1.id = p2.up_1_id and p2.level=2
+		LEFT join project p1 on p0.id = p1.up_id and p1.level=1
+		LEFT join project p2 on p1.id = p2.up_id and p2.level=2
 		where p0.level =0
 
 	</select>
+	
+	<insert id="addProject" parameterType="weekn.wreport.model.ProjectModel">
+		insert into project(name,level,up_id,team_id) values (#{name}, #{level}, #{up_id}, #{team_id})
+	</insert>
 
 </mapper>

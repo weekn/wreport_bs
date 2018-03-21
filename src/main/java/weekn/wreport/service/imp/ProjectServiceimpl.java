@@ -1,6 +1,6 @@
 package weekn.wreport.service.imp;
 
-import java.util.Iterator;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,11 @@ public class ProjectServiceimpl {
 	public List<ProjectModel> getRunningProject() {
 		return project_mapper.getRunningProject();
 		
+	}
+	
+	public List<ProjectModel> addProject(ProjectModel pro) {
+		project_mapper.addProject(pro);
+		return project_mapper.getRunningProject();
 	}
 
 	

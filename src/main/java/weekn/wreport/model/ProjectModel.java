@@ -5,9 +5,30 @@ import java.util.List;
 public class ProjectModel {
 	private int id;
 	private String name;
+	private int up_id;
+	private int level;
+	private int team_id;
 	private List<ReportModel> report;
 	private List<ProjectModel> sub;
 	
+	public int getTeam_id() {
+		return team_id;
+	}
+	public void setTeam_id(int team_id) {
+		this.team_id = team_id;
+	}
+	public int getUp_id() {
+		return up_id;
+	}
+	public void setUp_id(int up_id) {
+		this.up_id = up_id;
+	}
+	public int getLevel() {
+		return level;
+	}
+	public void setLevel(int level) {
+		this.level = level;
+	}
 	public List<ReportModel> getReport() {
 		return report;
 	}

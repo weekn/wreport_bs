@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import weekn.wreport.mapper.ProjectMapper;
+import weekn.wreport.model.ProjectModel;
 import weekn.wreport.model.ReportModel;
 import weekn.wreport.model.ResponseModel;
 import weekn.wreport.service.imp.ProjectServiceimpl;
@@ -21,11 +22,12 @@ public class ProjectController {
 	 * 添加项目
 	 */
 	@RequestMapping(value = "/project", method = RequestMethod.POST)
-	public ResponseModel addReport(@RequestBody ReportModel new_report,@PathVariable String username) {// POST /session # 创建新的会话（登录）
-		System.out.println("ReportController-addReport"+new_report.getProblem());
+	public ResponseModel addReport(@RequestBody ProjectModel project) {// POST /session # 创建新的会话（登录）
+		System.out.println("ReportController-addReport");
 		ResponseModel response=new ResponseModel();
 		
-		response.setResponse(new_report);
+		response.setResponse(project_service.addProject(project));
+		response.setMessage("新建成功");
 		
 		return  response;
 	
