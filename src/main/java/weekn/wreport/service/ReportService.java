@@ -6,7 +6,7 @@ import weekn.wreport.model.ProjectModel;
 import weekn.wreport.model.ReportModel;
 
 public interface ReportService {
-	public void addReport(String username,ReportModel report);
+	public void addReport(ReportModel report);
 	public List<ProjectModel> getReportWithUser(String username);
 	public List<ReportModel> getReportWithTeam();
 	public void deleteReport(ReportModel report);

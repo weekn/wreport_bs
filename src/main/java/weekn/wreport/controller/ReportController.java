@@ -21,11 +21,11 @@ public class ReportController {
 	/**
 	 * 添加周报
 	 */
-	@RequestMapping(value = "/{username}/report", method = RequestMethod.POST)
-	public ResponseModel addReport(@RequestBody ReportModel new_report,@PathVariable String username) {// POST /session # 创建新的会话（登录）
+	@RequestMapping(value = "/report", method = RequestMethod.POST)
+	public ResponseModel addReport(@RequestBody ReportModel new_report) {// POST /session # 创建新的会话（登录）
 		System.out.println("ReportController-addReport"+new_report.getProblem());
 		ResponseModel response=new ResponseModel();
-		report_server.addReport(username,new_report);
+		report_server.addReport(new_report);
 		response.setResponse(new_report);
 		
 		return  response;
@@ -34,12 +34,36 @@ public class ReportController {
 	/**
 	 * 获得用户周报
 	 */
-	@RequestMapping(value = "/{username}/report", method = RequestMethod.GET)
+	@RequestMapping(value = "/report/user/{username}", method = RequestMethod.GET)
 	public ResponseModel getUserReport(@PathVariable String username) {// POST /session # 创建新的会话（登录）
 		System.out.println("ReportController-getUserReport"+username);
 		ResponseModel response=new ResponseModel();
 		
 		response.setResponse(report_server.getReportWithUser(username));
+		
+		return  response;
+	
+	}
+	/**
+	 * 更新
+	 */
+	@RequestMapping(value = "/report/{report_id}", method = RequestMethod.PUT)
+	public ResponseModel updateReport(@RequestBody ReportModel new_report,@PathVariable String report_id) {// POST /session # 创建新的会话（登录）
+		System.out.println("ReportController-updateReport"+new_report.getUser_id());
+		ResponseModel response=new ResponseModel();
+		
+		try {
+			new_report.setId(Integer.parseInt(report_id));
+			report_server.updateReport(new_report);
+			
+			response.setMessage("success");
+		}catch(Exception e){
+			e.printStackTrace();
+			response.setMessage("false");
+		}
+		
+		
+//		response.setResponse(report_server.getReportWithUser(username));
 		
 		return  response;
 	

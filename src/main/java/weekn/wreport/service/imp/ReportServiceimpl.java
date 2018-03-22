@@ -24,7 +24,7 @@ public class ReportServiceimpl implements ReportService{
 	@Autowired
 	private ProjectMapper  project_mapper;
 	@Override
-	public void addReport(String username,ReportModel report) {
+	public void addReport(ReportModel report) {
 		report.setUser_id(1);
 		report.setTime(TimeUtils.getCurrentTimeStamp());
 		report_mapper.addReport(report);
@@ -35,14 +35,10 @@ public class ReportServiceimpl implements ReportService{
 	public List<ProjectModel> getReportWithUser(String username) {
 		Integer userid=1;
 		Long time=(long) 100000;
-		List<ReportModel> report_list=report_mapper.getReportWithUser(userid,time);
-		List<ProjectModel> project_list= project_mapper.getProject();
-		ReportModel res_report=new ReportModel();
-		for(Iterator<ReportModel> it=report_list.iterator();it.hasNext();){
-			ReportModel  report=it.next();
-			//report
-		}
-		return project_list;
+		List<ProjectModel> report_list=report_mapper.getReportWithUser(userid,time);
+		clearProject(report_list);
+		
+		return report_list;
 	}
 
 	@Override
@@ -59,14 +55,49 @@ public class ReportServiceimpl implements ReportService{
 
 	@Override
 	public void updateReport(ReportModel report) {
-		// TODO Auto-generated method stub
-		
+		report_mapper.updateReport(report);		
 	}
 
 	@Override
 	public void summarizeReport(ReportModel report) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void clearProject(List<ProjectModel> p) {
+		//清除自己不含日志，且自己的子项也不含日志的项目
+		Iterator<ProjectModel> iter0 = p.iterator();  
+		while(iter0.hasNext()){  
+			ProjectModel pm0=iter0.next();
+			boolean ifclear0=true;
+			Iterator<ProjectModel> iter1 = pm0.getSub().iterator();  
+			while(iter1.hasNext()){  
+				ProjectModel pm1=iter1.next();
+				boolean ifclear1=true;
+				Iterator<ProjectModel> iter2 = pm1.getSub().iterator();  
+				while(iter2.hasNext()){  
+					ProjectModel pm2=iter2.next();
+					
+					if(pm2.getReport()==null||pm2.getReport().size()<1) {
+						iter2.remove();
+					}else {
+						ifclear1=false;
+						
+					}
+					
+				}
+				if(ifclear1&&(pm1.getReport()==null||pm1.getReport().size()<1)) {
+					iter1.remove();
+				}else {
+					ifclear0=false;
+				}
+				
+			}
+			if(ifclear0&&(pm0.getReport()==null||pm0.getReport().size()<1)) {
+				iter0.remove();
+			}
+			
+		}
 	}
 	
 

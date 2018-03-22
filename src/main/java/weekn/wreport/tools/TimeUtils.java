@@ -5,7 +5,7 @@ import java.util.Date;
 
 public class TimeUtils {
 	public static void main(String[] args) {
-		Long a=1521016083000L;
+		Long a=new Date().getTime();
 		getWeeknStartEnd(a);
 	}
    static public Long getCurrentTimeStamp() {

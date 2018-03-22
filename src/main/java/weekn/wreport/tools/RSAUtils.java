@@ -60,11 +60,7 @@ public class RSAUtils {
     }
      
     public static void main(String[] args) {
-        // 生成public key
-        System.out.println(generateBase64PublicKey());
-         
-        // 解密
-        System.out.println(decryptBase64("ls6FL6/8byeSqkavgNzPUJTF5lcjy53wTwW0n+ceV1m7GGo/Mi1EwivtdBvJ7lgn8197J8JcDCqiLvN8HDNqirg9zhKuS4NYf3MEPzyAiQjd497H5JhifAU8ZNlnZ0ekW49A9FxMYUtA6nEMJbiwgDDFG7c4CDd2VnsaiLu/mXk="));
+    	System.out.println(Integer.parseInt("1"));
     }
  
 }
