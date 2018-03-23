@@ -45,6 +45,19 @@ public class ReportController {
 	
 	}
 	/**
+	 * 获得团队周报
+	 */
+	@RequestMapping(value = "/report/team", method = RequestMethod.GET)
+	public ResponseModel getTeamReport() {// POST /session # 创建新的会话（登录）
+		System.out.println("ReportController-getTeamReport");
+		ResponseModel response=new ResponseModel();
+		
+		response.setResponse(report_server.getReportWithTeam());
+		
+		return  response;
+	
+	}
+	/**
 	 * 更新
 	 */
 	@RequestMapping(value = "/report/{report_id}", method = RequestMethod.PUT)
