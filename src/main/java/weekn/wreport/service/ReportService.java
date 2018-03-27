@@ -5,12 +5,13 @@ import java.util.List;
 import weekn.wreport.model.ProjectModel;
 import weekn.wreport.model.ReportModel;
 import weekn.wreport.model.SimpleReportModel;
+import weekn.wreport.model.SysUserModel;
 
 public interface ReportService {
-	public void addReport(ReportModel report);
-	public List<SimpleReportModel> getReportWithUser(String username);
+	public int addReport(ReportModel report);
+	public List<SimpleReportModel> getReportWithUser(SysUserModel user);
 	public List<ProjectModel> getReportWithTeam();
-	public void deleteReport(ReportModel report);
+	public int deleteReport(int report_id);
 	public void updateReport(ReportModel report);
 	public void summarizeReport(ReportModel report);
 }

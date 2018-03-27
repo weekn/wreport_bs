@@ -13,7 +13,7 @@ public class RedisServiceImpl implements RedisService {
 	@Override
 	public void set(String key, String value) {
 		Jedis jedis = new Jedis(this.host);
-		jedis.set(key, value);
+		jedis.setex(key, 3000, value);
 		jedis.close();
 		
 	}

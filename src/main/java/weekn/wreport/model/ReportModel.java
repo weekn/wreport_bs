@@ -1,12 +1,12 @@
 package weekn.wreport.model;
 
-import java.util.List;
 
 public class ReportModel {
 	private Integer id;
 	private Integer project_id;
 	private Integer user_id;
-	private Integer general;//'是否是归纳后的report，为1为是'
+	private String user_name="无名氏";
+	private Integer general=0;//'是否是归纳后的report，为1为是'
 	private Long time;
 	private String outcome;
 	private String problem;
@@ -15,6 +15,12 @@ public class ReportModel {
 	
 	
 	
+	public String getUser_name() {
+		return user_name;
+	}
+	public void setUser_name(String user_name) {
+		this.user_name = user_name;
+	}
 	public Integer getId() {
 		return id;
 	}

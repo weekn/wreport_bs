@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import weekn.wreport.mapper.ProjectMapper;
+import weekn.wreport.dao.ProjectDao;
 import weekn.wreport.model.ProjectModel;
 import weekn.wreport.model.ReportModel;
 import weekn.wreport.model.ResponseModel;

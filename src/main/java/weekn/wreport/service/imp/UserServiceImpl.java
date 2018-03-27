@@ -6,13 +6,14 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import weekn.wreport.mapper.UserMapper;
+import weekn.wreport.dao.UserDao;
 import weekn.wreport.model.SysUserModel;
+import weekn.wreport.tools.JsonUtils;
 
 @Service
 public class UserServiceImpl {
 	@Autowired
-	private UserMapper mapper;
+	private UserDao mapper;
 	
 	@Autowired
 	RedisServiceImpl redis_service;
@@ -22,11 +23,13 @@ public class UserServiceImpl {
 //    }
 	public SysUserModel getToken(SysUserModel request_user) throws Exception{
 		
-		SysUserModel user=mapper.findByUserName(request_user.getUsername());
+		SysUserModel user=mapper.findByUserName(request_user.getUsername(),request_user.getPassword());
 		if(user!=null) {
 			String token=UUID.randomUUID().toString();
-			redis_service.set(user.getUsername(), token);
 			user.setToken(token);
+			String user_json=JsonUtils.encode(user);
+			redis_service.set(token, user_json);
+			
 			return user;
 		}else {
 			throw new Exception("no user");

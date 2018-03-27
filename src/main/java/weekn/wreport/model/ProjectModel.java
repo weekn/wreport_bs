@@ -8,7 +8,8 @@ public class ProjectModel {
 	private int up_id;
 	private int level;
 	private int team_id;
-	private List<ReportModel> report;
+	private List<ReportModel> reports;
+	private ReportModel report;
 	private List<ProjectModel> sub;
 	
 	public int getTeam_id() {
@@ -29,10 +30,17 @@ public class ProjectModel {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-	public List<ReportModel> getReport() {
+	
+	public List<ReportModel> getReports() {
+		return reports;
+	}
+	public void setReports(List<ReportModel> reports) {
+		this.reports = reports;
+	}
+	public ReportModel getReport() {
 		return report;
 	}
-	public void setReport(List<ReportModel> report) {
+	public void setReport(ReportModel report) {
 		this.report = report;
 	}
 	public int getId() {

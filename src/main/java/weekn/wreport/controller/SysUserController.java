@@ -3,6 +3,7 @@ package weekn.wreport.controller;
 import java.io.IOException;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,43 @@ public class SysUserController {
 	 */
 	@RequestMapping(value = "/token", method = {RequestMethod.GET,RequestMethod.POST})
 	public ResponseModel post(@RequestBody SysUserModel user) {// POST /session # 创建新的会话（登录）
+//		System.out.println(request.getHeaders().get("token").get(0));
 		ResponseModel response=new ResponseModel();
 		try {
 			response.setResponse(user_service.getToken(user));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setMessage("登录错误，请确认账号密码");
+			
+		} 
+		
+		return  response;
+	
+	}
+	
+	@RequestMapping(value = "/token1", method = {RequestMethod.GET,RequestMethod.POST})
+	public ResponseModel post1(HttpServletRequest request) {// POST /session # 创建新的会话（登录）
+		System.out.println(request.getHeader("token"));
+		ResponseModel response=new ResponseModel();
+		try {
+//			response.setResponse(user_service.getToken(user));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.setMessage("登录错误，请确认账号密码");
+			
+		} 
+		
+		return  response;
+	
+	}
+	@RequestMapping(value = "/token2", method = {RequestMethod.GET,RequestMethod.POST})
+	public ResponseModel post1(String token) {// POST /session # 创建新的会话（登录）
+		System.out.println("cc---"+token);
+		ResponseModel response=new ResponseModel();
+		try {
+//			response.setResponse(user_service.getToken(user));
 			
 		} catch (Exception e) {
 			e.printStackTrace();

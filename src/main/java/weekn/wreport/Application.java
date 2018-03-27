@@ -18,7 +18,7 @@ import org.springframework.web.filter.CorsFilter;
 @RestController
 @EnableAutoConfiguration
 @SpringBootApplication
-@MapperScan("weekn.wreport.mapper")
+@MapperScan("weekn.wreport.dao")
 public class Application  implements EmbeddedServletContainerCustomizer {  
 	 @RequestMapping("/weekn")
      String home() {

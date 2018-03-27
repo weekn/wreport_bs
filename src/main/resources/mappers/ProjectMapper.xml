@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="weekn.wreport.mapper.ProjectMapper">
+<mapper namespace="weekn.wreport.dao.ProjectDao">
 	<resultMap id="reportsMap" type="weekn.wreport.model.ProjectModel">
 
 		<result column="id0" property="id" />

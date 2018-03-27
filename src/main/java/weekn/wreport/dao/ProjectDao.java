@@ -1,4 +1,4 @@
-package weekn.wreport.mapper;
+package weekn.wreport.dao;
 
 
 
@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Param;
 import weekn.wreport.model.ProjectModel;
 
 
-public interface  ProjectMapper {
+public interface  ProjectDao {
 	
 	public List<ProjectModel> getProject();
 	
