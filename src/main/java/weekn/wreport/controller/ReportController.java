@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import weekn.wreport.model.ReportModel;
 import weekn.wreport.model.ResponseModel;
@@ -43,7 +44,7 @@ public class ReportController {
 		SysUserModel user = new MySecurityManager().start(request, redis_s).end();
 		
 		new_report.setUser_id(user.getId());//添加周报只能添加自己的，所以从redis中取userid
-
+		new_report.setUser_name(user.getUsername());
 		int id = report_server.addReport(new_report);
 		response.setResponse(new_report);
 
@@ -72,9 +73,10 @@ public class ReportController {
 
 	/**
 	 * 获得团队周报
+	 * @throws JsonProcessingException 
 	 */
 	@RequestMapping(value = "/report/team", method = RequestMethod.GET)
-	public ResponseModel getTeamReport() {// POST /session # 创建新的会话（登录）
+	public ResponseModel getTeamReport() throws JsonProcessingException {// POST /session # 创建新的会话（登录）
 		System.out.println("ReportController-getTeamReport");
 		ResponseModel response = new ResponseModel();
 

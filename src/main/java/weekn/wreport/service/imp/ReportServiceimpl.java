@@ -1,8 +1,11 @@
 package weekn.wreport.service.imp;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import weekn.wreport.dao.ProjectDao;
 import weekn.wreport.dao.ReportDao;
 import weekn.wreport.model.ProjectModel;
+import weekn.wreport.model.ProjectRoleModel;
 import weekn.wreport.model.ReportModel;
 import weekn.wreport.model.SimpleReportModel;
 import weekn.wreport.model.SysUserModel;
@@ -49,11 +53,21 @@ public class ReportServiceimpl {
 	}
 
 	
-	public List<ProjectModel> getReportWithTeam() {
+	public List<ProjectModel> getReportWithTeam() throws JsonProcessingException {
 		
 		List<ProjectModel> report_list=report_mapper.getReportWithTeam();
-		clearProject(report_list);
-		getUniqueReport(report_list);
+		List<Integer> project_id_list=clearProject(report_list);
+		List<ProjectRoleModel> pr_list=project_mapper.getProjectRolesA2ProjectId(project_id_list);
+		System.out.println(JsonUtils.encode(pr_list));
+		Map<Integer,ProjectRoleModel> pr_map=new HashMap<Integer, ProjectRoleModel>();
+		for(ProjectRoleModel pr:pr_list) {
+			int id=pr.getProject_id();
+			if(pr.getRoles()!=null && pr.getRoles().size()>0) {
+				pr_map.put(id, pr);
+			}
+			
+		}
+		getUniqueReport(report_list,pr_map);
 		return report_list;
 	}
 
@@ -69,7 +83,6 @@ public class ReportServiceimpl {
 
 	
 	private ReportModel summarizeReport(List<ReportModel> reports) {
-		int size=reports.size();
 		
 		
 		StringBuilder s_outcome=new StringBuilder("");
@@ -93,23 +106,30 @@ public class ReportServiceimpl {
 			}
 		}
 		ReportModel s_report=new ReportModel();
+		s_report.setId(reports.get(0).getId());
 		s_report.setOutcome(s_outcome.toString());
 		s_report.setProblem(s_problem.toString());
 		s_report.setPlan(s_plan.toString());
 		return s_report;
 		
 	}
-	private void getUniqueReport(List<ProjectModel> p) {
+	private void getUniqueReport(List<ProjectModel> p,Map<Integer,ProjectRoleModel> pr_map) {
 		//从reports中获得唯一的report，该方法必须在clearproject方法后
 		//如果没有总结性的report，就把reports中的所有report拼接起来，并且general设为0
 		//如果有总结性的report，就让改report为最终的report，并且general设为1
 		//获得总结report通过私有方法summarizeReport
+		//通过参数pr_map，给project设定用户在项目中的角色
+		
 		Iterator<ProjectModel> iter0 = p.iterator();
 		while(iter0.hasNext()){ 
 			ProjectModel pm0=iter0.next();
 			
 			if(pm0.getReports()!=null&&pm0.getReports().size()>0) {
 				pm0.setReport(summarizeReport(pm0.getReports()));
+				if(pr_map.containsKey(pm0.getId())) {//设定项目的角色
+					pm0.setRoles(pr_map.get(pm0.getId()).getRoles());
+				}
+				
 			}
 			if(pm0.getSub().size()>0){
 				Iterator<ProjectModel> iter1 = pm0.getSub().iterator();
@@ -119,6 +139,9 @@ public class ReportServiceimpl {
 					
 					if(pm1.getReports()!=null&&pm1.getReports().size()>0) {
 						pm1.setReport(summarizeReport(pm1.getReports()));
+						if(pr_map.containsKey(pm1.getId())) {
+							pm1.setRoles(pr_map.get(pm1.getId()).getRoles());
+						}
 					}
 					if(pm1.getSub().size()>0){
 						Iterator<ProjectModel> iter2 = pm1.getSub().iterator();
@@ -127,6 +150,9 @@ public class ReportServiceimpl {
 							
 							if(pm2.getReports()!=null&&pm2.getReports().size()>0) {
 								pm2.setReport(summarizeReport(pm2.getReports()));
+								if(pr_map.containsKey(pm2.getId())) {
+									pm2.setRoles(pr_map.get(pm2.getId()).getRoles());
+								}
 							}
 						}
 					}
@@ -202,9 +228,11 @@ public class ReportServiceimpl {
 		return simpleReport_list;
 	}
 	
-	private void clearProject(List<ProjectModel> p) {
+	private List<Integer> clearProject(List<ProjectModel> p) {
 		//清除自己不含日志，且自己的子项也不含日志的项目
+		//返回有report的project 的 id
 		Iterator<ProjectModel> iter0 = p.iterator();  
+		List<Integer> project_id_list=new LinkedList<Integer>();
 		while(iter0.hasNext()){  
 			ProjectModel pm0=iter0.next();
 			boolean ifclear0=true;
@@ -220,7 +248,7 @@ public class ReportServiceimpl {
 						iter2.remove();
 					}else {
 						ifclear1=false;
-						
+						project_id_list.add(pm2.getId());
 					}
 					
 				}
@@ -228,14 +256,18 @@ public class ReportServiceimpl {
 					iter1.remove();
 				}else {
 					ifclear0=false;
+					project_id_list.add(pm1.getId());
 				}
 				
 			}
 			if(ifclear0&&(pm0.getReports()==null||pm0.getReports().size()<1)) {
 				iter0.remove();
+			}else {
+				project_id_list.add(pm0.getId());
 			}
 			
 		}
+		return project_id_list;
 	}
 	
 

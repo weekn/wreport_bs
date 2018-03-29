@@ -57,6 +57,7 @@
         insert into report 
         (project_id,
         user_id,
+        user_name,
         general,
         time,
         outcome,
@@ -66,6 +67,7 @@
         ) values (
         #{project_id},
         #{user_id},
+        #{user_name},
         #{general},
         #{time },
         #{outcome},

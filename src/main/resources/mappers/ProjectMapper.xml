@@ -1,40 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="weekn.wreport.dao.ProjectDao">
-	<resultMap id="reportsMap" type="weekn.wreport.model.ProjectModel">
 
-		<result column="id0" property="id" />
-		<result column="name0" property="name" />
-		<collection property="report" ofType="weekn.wreport.model.ReportModel">
-			<result column="report_id0" property="id" />
-			<result column="user_id0" property="user_id" />
-			<result column="outcome0" property="outcome" />
-			<result column="problem0" property="problem" />
-			<result column="plan0" property="plan" />
-		</collection>
-		<collection property="sub" ofType="weekn.wreport.model.ProjectModel">
-			<result column="id1" property="id" />
-			<result column="name1" property="name" />
-			<collection property="report" ofType="weekn.wreport.model.ReportModel">
-				<result column="report_id1" property="id" />
-				<result column="user_id1" property="user_id" />
-				<result column="outcome1" property="outcome" />
-				<result column="problem1" property="problem" />
-				<result column="plan1" property="plan" />
-			</collection>
-			<collection property="sub" ofType="weekn.wreport.model.ProjectModel">
-				<result column="id2" property="id" />
-				<result column="name2" property="name" />
-				<collection property="report" ofType="weekn.wreport.model.ReportModel">
-					<result column="report_id2" property="id" />
-					<result column="user_id2" property="user_id" />
-					<result column="outcome2" property="outcome" />
-					<result column="problem2" property="problem" />
-					<result column="plan2" property="plan" />
-				</collection>
-			</collection>
-		</collection>
-	</resultMap>
 
 	<resultMap id="projectMap" type="weekn.wreport.model.ProjectModel">
 
@@ -52,26 +19,21 @@
 			</collection>
 		</collection>
 	</resultMap>
+	
+	<resultMap id="project_role_Map" type="weekn.wreport.model.ProjectRoleModel">
+		<result column="project_name" property="project_name" />
+		<result column="project_id" property="project_id" />
+		<collection property="roles" ofType="weekn.wreport.model.PRoleModel">
+			
+			<result column="user_name" property="user_name" />
+			
+			<result column="user_id" property="user_id" />
+			<result column="role" property="role" />
+		</collection>
+		
+	</resultMap>
 
-	<select id="getProject" resultMap="reportsMap">
-		select p0.name as name0,p0.id as id0 , r0.id as report_id0,r0.user_id as
-		user_id0,r0.outcome as outcome0,r0.problem as problem0,r0.plan as
-		plan0,
-		p1.name as name1,p1.id as id1, r1.id as report_id1,r1.user_id as
-		user_id1,r1.outcome as outcome1,r1.problem as problem1,r1.plan as
-		plan1,
-		p2.name as name2,p2.id as id2, r2.id as report_id2,r2.user_id as
-		user_id2,r2.outcome as outcome2,r2.problem as problem2,r2.plan as
-		plan2
-		FROM project p0
-		left join report r0 on p0.id = r0.project_id
-		LEFT join project p1 on p0.id = p1.up_0_id and p1.level=1 left join report
-		r1 on p1.id = r1.project_id
-		LEFT join project p2 on p1.id = p2.up_1_id and p2.level=2 left join report
-		r2 on p2.id = r2.project_id
-		where p0.level =0
 
-	</select>
 	<select id="getRunningProject" resultMap="projectMap">
 		select p0.name as name0,p0.id as id0 ,p1.name as name1,p1.id as id1, p2.name
 		as name2,p2.id as id2
@@ -80,6 +42,23 @@
 		LEFT join project p2 on p1.id = p2.up_id and p2.level=2
 		where p0.level =0
 
+	</select>
+	<select id="getProjectRolesA2ProjectId" parameterType="java.util.List" resultMap="project_role_Map">
+		SELECT pr.id as id,p.name as project_name,u.username as user_name,p.id as project_id ,u.id as user_id,pr.role  as role 
+		FROM project p 
+		left join project_role pr on p.id =pr.project_id 
+		left join sys_user u on pr.user_id=u.id
+		<where>
+		p.id in
+			<foreach collection="list" item="item" open=" (" separator="," close=")">
+	          #{item} 
+	    	</foreach>
+		
+			
+		
+			
+		</where>
+		
 	</select>
 	
 	<insert id="addProject" parameterType="weekn.wreport.model.ProjectModel">

@@ -10,8 +10,16 @@ public class ProjectModel {
 	private int team_id;
 	private List<ReportModel> reports;
 	private ReportModel report;
+	private List<PRoleModel> roles;
 	private List<ProjectModel> sub;
 	
+	
+	public List<PRoleModel> getRoles() {
+		return roles;
+	}
+	public void setRoles(List<PRoleModel> roles) {
+		this.roles = roles;
+	}
 	public int getTeam_id() {
 		return team_id;
 	}
