@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import weekn.wreport.dao.ProjectDao;
 import weekn.wreport.dao.ReportDao;
+import weekn.wreport.model.PRoleModel;
 import weekn.wreport.model.ProjectModel;
 import weekn.wreport.model.ProjectRoleModel;
 import weekn.wreport.model.ReportModel;
@@ -40,12 +41,34 @@ public class ReportServiceimpl {
 		return report_mapper.addReport(report);
 		
 	}
+	public void summarizeReport(ReportModel report,SysUserModel user) throws JsonProcessingException {
+		report.setUser_id(user.getId());//添加周报只能添加自己的，所以从redis中取userid
+		report.setUser_name(user.getUsername());
+		report.setGeneral(1);
+		report.setTime(TimeUtils.getCurrentTimeStamp());
+		System.out.println(JsonUtils.encode(report));
+		PRoleModel role=project_mapper.getProjectRoles(report.getProject_id(), user.getId());
+		if(role==null) {
+			System.out.println("没有查到觉得");
+		}else if(role.getRole()==0) {
+			System.out.println(" 有汇总权限");
+			List<ReportModel> report_l=report_mapper.getSummarizeReport(report.getProject_id());
+			if(report_l.size()>0) {
+				report.setId(report_l.get(0).getId());
+				report_mapper.updateReport(report);
+			}else {
+				report_mapper.addReport(report);
+			}
+		}
+		//return report_mapper.addReport(report);
+		
+	}
 
 	
-	public List<SimpleReportModel> getReportWithUser(SysUserModel user) {
+	public List<SimpleReportModel> getReportWithUser(SysUserModel user,Long time) {
 		Integer userid=user.getId();
-		Long time=(long) 100000;
-		List<ProjectModel> report_list=report_mapper.getReportWithUser(userid,time);
+		Map<String, Long> time_map=TimeUtils.getWeeknStartEnd(time);
+		List<ProjectModel> report_list=report_mapper.getReportWithUser(userid,time_map.get("start"),time_map.get("end"));
 		List<SimpleReportModel> res=buildSimpleReport(report_list);
 		
 		
@@ -53,9 +76,9 @@ public class ReportServiceimpl {
 	}
 
 	
-	public List<ProjectModel> getReportWithTeam() throws JsonProcessingException {
+	public List<ProjectModel> getReportWithTeam(SysUserModel user ) throws JsonProcessingException {
 		
-		List<ProjectModel> report_list=report_mapper.getReportWithTeam();
+		List<ProjectModel> report_list=report_mapper.getReportWithTeam(user.getTeam_id());
 		List<Integer> project_id_list=clearProject(report_list);
 		List<ProjectRoleModel> pr_list=project_mapper.getProjectRolesA2ProjectId(project_id_list);
 		System.out.println(JsonUtils.encode(pr_list));
@@ -68,6 +91,8 @@ public class ReportServiceimpl {
 			
 		}
 		getUniqueReport(report_list,pr_map);
+		System.out.println("getReportWithTeam------------");
+		System.out.println(JsonUtils.encode(report_list));
 		return report_list;
 	}
 
@@ -82,15 +107,21 @@ public class ReportServiceimpl {
 	}
 
 	
-	private ReportModel summarizeReport(List<ReportModel> reports) {
+	private ReportModel getSummarizeReport(List<ReportModel> reports,int project_id) {
 		
 		
 		StringBuilder s_outcome=new StringBuilder("");
 		StringBuilder s_problem=new StringBuilder("");
 		StringBuilder s_plan=new StringBuilder("");
-		for(ReportModel report: reports) {
+		
+		Iterator<ReportModel> iter = reports.iterator();
+		while(iter.hasNext()){ 
+			ReportModel report=iter.next();
 			if(report.getGeneral()==1) {
-				return report;
+				report.setProject_id(project_id);
+				ReportModel r_report=report.clone();
+				iter.remove();//删除general为1的，只保留费总结性日志
+				return r_report;
 			}else {
 				String user_name=report.getUser_name();
 				String outcome=report.getOutcome();
@@ -107,6 +138,7 @@ public class ReportServiceimpl {
 		}
 		ReportModel s_report=new ReportModel();
 		s_report.setId(reports.get(0).getId());
+		s_report.setProject_id(project_id);
 		s_report.setOutcome(s_outcome.toString());
 		s_report.setProblem(s_problem.toString());
 		s_report.setPlan(s_plan.toString());
@@ -125,7 +157,7 @@ public class ReportServiceimpl {
 			ProjectModel pm0=iter0.next();
 			
 			if(pm0.getReports()!=null&&pm0.getReports().size()>0) {
-				pm0.setReport(summarizeReport(pm0.getReports()));
+				pm0.setReport(getSummarizeReport(pm0.getReports(),pm0.getId()));
 				if(pr_map.containsKey(pm0.getId())) {//设定项目的角色
 					pm0.setRoles(pr_map.get(pm0.getId()).getRoles());
 				}
@@ -138,7 +170,7 @@ public class ReportServiceimpl {
 					ProjectModel pm1=iter1.next();
 					
 					if(pm1.getReports()!=null&&pm1.getReports().size()>0) {
-						pm1.setReport(summarizeReport(pm1.getReports()));
+						pm1.setReport(getSummarizeReport(pm1.getReports(),pm1.getId()));
 						if(pr_map.containsKey(pm1.getId())) {
 							pm1.setRoles(pr_map.get(pm1.getId()).getRoles());
 						}
@@ -149,7 +181,7 @@ public class ReportServiceimpl {
 							ProjectModel pm2=iter2.next();
 							
 							if(pm2.getReports()!=null&&pm2.getReports().size()>0) {
-								pm2.setReport(summarizeReport(pm2.getReports()));
+								pm2.setReport(getSummarizeReport(pm2.getReports(),pm2.getId()));
 								if(pr_map.containsKey(pm2.getId())) {
 									pm2.setRoles(pr_map.get(pm2.getId()).getRoles());
 								}
@@ -162,6 +194,7 @@ public class ReportServiceimpl {
 	}
 	private List<SimpleReportModel> buildSimpleReport(List<ProjectModel> p) {
 		//把有项目上下级结构关系的日志，变为直接有项目完整路径的单挑日志
+		
 		Iterator<ProjectModel> iter0 = p.iterator();
 		List<SimpleReportModel> simpleReport_list=new LinkedList<SimpleReportModel>();
 		while(iter0.hasNext()){ 
@@ -225,6 +258,7 @@ public class ReportServiceimpl {
 				}
 			}
 		}
+		
 		return simpleReport_list;
 	}
 	

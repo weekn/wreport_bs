@@ -1,7 +1,7 @@
 package weekn.wreport.model;
 
 
-public class ReportModel {
+public class ReportModel implements Cloneable{
 	private Integer id;
 	private Integer project_id;
 	private Integer user_id;
@@ -13,7 +13,16 @@ public class ReportModel {
 	private String plan;
 	private float rate;    //'项目进度'
 	
-	
+	@Override  
+    public ReportModel clone() {  
+		ReportModel r = null;  
+        try{  
+            r = (ReportModel)super.clone();  
+        }catch(CloneNotSupportedException e) {  
+            e.printStackTrace();  
+        }  
+        return r;  
+    }  
 	
 	public String getUser_name() {
 		return user_name;

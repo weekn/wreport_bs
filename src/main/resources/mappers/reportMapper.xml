@@ -23,6 +23,7 @@
 			<result column="report_id0" property="id" />
 			<result column="user_id0" property="user_id" />
 			<result column="user_name0" property="user_name" />
+			<result column="general0" property="general" />
 			<result column="outcome0" property="outcome" />
 			<result column="problem0" property="problem" />
 			<result column="plan0" property="plan" />
@@ -34,6 +35,7 @@
 				<result column="report_id1" property="id" />
 				<result column="user_id1" property="user_id" />
 				<result column="user_name1" property="user_name" />
+				<result column="general1" property="general" />
 				<result column="outcome1" property="outcome" />
 				<result column="problem1" property="problem" />
 				<result column="plan1" property="plan" />
@@ -45,6 +47,7 @@
 					<result column="report_id2" property="id" />
 					<result column="user_id2" property="user_id" />
 					<result column="user_name2" property="user_name" />
+					<result column="general2" property="general" />
 					<result column="outcome2" property="outcome" />
 					<result column="problem2" property="problem" />
 					<result column="plan2" property="plan" />
@@ -52,6 +55,8 @@
 			</collection>
 		</collection>
 	</resultMap>
+	
+
 
 <insert id="addReport" parameterType="weekn.wreport.model.ReportModel" useGeneratedKeys="true" keyProperty="id">
         insert into report 
@@ -78,40 +83,43 @@
         
 </insert>
 <select id="getReportWithTeam" resultMap="projectsreportsMap">
-		SELECT 
+	SELECT 
 		p0.name as name0,p0.id as id0 , 
-		r0.id as report_id0,r0.user_id as user_id0,r0.user_name as user_name0, r0.outcome as outcome0,r0.problem as problem0,r0.plan as plan0,
+		r0.id as report_id0,r0.user_id as user_id0,r0.user_name as user_name0,r0.general as general0 ,r0.outcome as outcome0,r0.problem as problem0,r0.plan as plan0,
 		p1.name as name1,p1.id as id1, 
-		r1.id as report_id1,r1.user_id as user_id1,r1.user_name as user_name1,r1.outcome as outcome1,r1.problem as problem1,r1.plan as plan1,
+		r1.id as report_id1,r1.user_id as user_id1,r1.user_name as user_name1,r1.general as general1,r1.outcome as outcome1,r1.problem as problem1,r1.plan as plan1,
 		p2.name as name2,p2.id as id2, 
-		r2.id as report_id2,r2.user_id as user_id2,r2.user_name as user_name2,r2.outcome as outcome2,r2.problem as problem2,r2.plan as plan2
+		r2.id as report_id2,r2.user_id as user_id2,r2.user_name as user_name2,r2.general as general2,r2.outcome as outcome2,r2.problem as problem2,r2.plan as plan2
 		FROM project p0
-		left join report r0 on p0.id = r0.project_id    
-		LEFT join project p1 on p0.id = p1.up_id and p1.level=1  left join report
-		r1 on p1.id = r1.project_id    
-		LEFT join project p2 on p1.id = p2.up_id and p2.level=2 left join report
-		r2 on p2.id = r2.project_id   
-		where p0.level =0  
+		LEFT join report r0 on p0.id = r0.project_id    
+		LEFT join project p1 on p0.id = p1.up_id and p1.level=1 and p1.team_id=#{team_id} 
+		LEFT join report r1 on p1.id = r1.project_id    
+		LEFT join project p2 on p1.id = p2.up_id and p2.level=2 and p2.team_id=#{team_id}
+		LEFT join report r2 on p2.id = r2.project_id   
+		where p0.level =0 and p0.team_id=#{team_id}
 
 </select>
 <select id="getReportWithUser" resultMap="projectsreportsMap">
 		SELECT 
 		p0.name as name0,p0.id as id0 , 
-		r0.id as report_id0,r0.user_id as user_id0,r0.user_name as user_name0, r0.outcome as outcome0,r0.problem as problem0,r0.plan as plan0,
+		r0.id as report_id0,r0.user_id as user_id0,r0.user_name as user_name0,r0.outcome as outcome0,r0.problem as problem0,r0.plan as plan0,
 		p1.name as name1,p1.id as id1, 
 		r1.id as report_id1,r1.user_id as user_id1,r1.user_name as user_name1,r1.outcome as outcome1,r1.problem as problem1,r1.plan as plan1,
 		p2.name as name2,p2.id as id2, 
 		r2.id as report_id2,r2.user_id as user_id2,r2.user_name as user_name2,r2.outcome as outcome2,r2.problem as problem2,r2.plan as plan2
 		FROM project p0
-		left join report r0 on p0.id = r0.project_id   and r0.user_id=#{user_id}
+		left join report r0 on p0.id = r0.project_id  and r0.general=0  and r0.user_id=#{user_id} and r0.time BETWEEN #{starttime} AND #{endtime}
 		LEFT join project p1 on p0.id = p1.up_id and p1.level=1  left join report
-		r1 on p1.id = r1.project_id   and r1.user_id=#{user_id}
+		r1 on p1.id = r1.project_id  and r1.general=0  and r1.user_id=#{user_id} and r1.time BETWEEN #{starttime} AND #{endtime}
 		LEFT join project p2 on p1.id = p2.up_id and p2.level=2 left join report
-		r2 on p2.id = r2.project_id  and r2.user_id=#{user_id}
+		r2 on p2.id = r2.project_id  and r2.general=0  and r2.user_id=#{user_id} and r2.time BETWEEN #{starttime} AND #{endtime}
 		where p0.level =0  
 
 </select>
 
+<select id="getSummarizeReport"  resultMap="reportMap">
+	select * from report where general=1 and project_id=#{project_id}
+</select>
 
 <update id="updateReport">
 	UPDATE report SET outcome=#{outcome}, problem=#{problem}, plan=#{plan}

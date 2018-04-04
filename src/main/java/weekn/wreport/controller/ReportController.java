@@ -1,6 +1,7 @@
 package weekn.wreport.controller;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,11 +44,34 @@ public class ReportController {
 		ResponseModel response = new ResponseModel();
 
 		SysUserModel user = new MySecurityManager().start(request, redis_s).end();
-		
-		new_report.setUser_id(user.getId());//添加周报只能添加自己的，所以从redis中取userid
+
+		new_report.setUser_id(user.getId());// 添加周报只能添加自己的，所以从redis中取userid
 		new_report.setUser_name(user.getUsername());
 		int id = report_server.addReport(new_report);
 		response.setResponse(new_report);
+
+		return response;
+
+	}
+
+	/**
+	 * 添加汇总周报
+	 * 
+	 * @throws MyException_noLogin
+	 * @throws JsonProcessingException
+	 */
+	@RequestMapping(value = "/report/sumarize/project/{project_id}", method = RequestMethod.POST)
+	public ResponseModel summarizeReport(@RequestBody ReportModel new_report, @PathVariable int project_id,
+			HttpServletRequest request) throws MyException_noLogin, JsonProcessingException {// POST /session #
+																								// 创建新的会话（登录）
+		System.out.println("ReportController-summarizeReport-----" + new_report.getProblem());
+		ResponseModel response = new ResponseModel();
+
+		SysUserModel user = new MySecurityManager().start(request, redis_s).end();
+
+		new_report.setProject_id(project_id);
+		report_server.summarizeReport(new_report, user);
+		response.setStatus(200);
 
 		return response;
 
@@ -57,15 +82,23 @@ public class ReportController {
 	 * 
 	 * @throws MyException_noLogin
 	 */
-	@RequestMapping(value = "/report/user/{username}", method = RequestMethod.GET)
-	public ResponseModel getUserReport(@PathVariable String username, HttpServletRequest request)
+	@RequestMapping(value = "/report/user/{user_id}", method = RequestMethod.GET)
+	public ResponseModel getUserReport(@PathVariable String user_id,
+			@RequestParam(value = "time", required = false) Long time, HttpServletRequest request)
 			throws MyException_noLogin {// POST /session # 创建新的会话（登录）
-		System.out.println("ReportController-getUserReport" + username);
-		ResponseModel response = new ResponseModel();
+
+		if(time==null) {
+			time=new Date().getTime();
+		}
+		
+		
+		System.out.println("ReportController-getUserReport" + user_id);
+		
 
 		SysUserModel user = new MySecurityManager().start(request, redis_s).end();
-//		SysUserModel user =new SysUserModel();
-		response.setResponse(report_server.getReportWithUser(user));
+		// SysUserModel user =new SysUserModel();
+		ResponseModel response = new ResponseModel();
+		response.setResponse(report_server.getReportWithUser(user,time));
 
 		return response;
 
@@ -73,14 +106,20 @@ public class ReportController {
 
 	/**
 	 * 获得团队周报
-	 * @throws JsonProcessingException 
+	 * 
+	 * @throws JsonProcessingException
+	 * @throws MyException_noLogin
 	 */
 	@RequestMapping(value = "/report/team", method = RequestMethod.GET)
-	public ResponseModel getTeamReport() throws JsonProcessingException {// POST /session # 创建新的会话（登录）
+	public ResponseModel getTeamReport(HttpServletRequest request) throws JsonProcessingException, MyException_noLogin {// POST
+																														// /session
+																														// #
+																														// 创建新的会话（登录）
 		System.out.println("ReportController-getTeamReport");
 		ResponseModel response = new ResponseModel();
 
-		response.setResponse(report_server.getReportWithTeam());
+		SysUserModel user = new MySecurityManager().start(request, redis_s).end();
+		response.setResponse(report_server.getReportWithTeam(user));
 
 		return response;
 
@@ -127,5 +166,4 @@ public class ReportController {
 
 	}
 
-	
 }

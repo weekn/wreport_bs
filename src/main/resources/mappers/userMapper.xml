@@ -4,6 +4,7 @@
   <resultMap id="userMap" type="weekn.wreport.model.SysUserModel" >
     <result column="id" property="id"  />
     <result column="username" property="username"  />
+    <result column="team_id" property="team_id"  />
     <collection property="roles" ofType="weekn.wreport.model.SysRoleModel">
             <result column="name" property="name"/>
     </collection>

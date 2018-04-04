@@ -60,7 +60,12 @@
 		</where>
 		
 	</select>
-	
+	<select id="getProjectRoles" resultType="weekn.wreport.model.PRoleModel">
+		SELECT  * from project_role 
+		<where>
+			user_id=#{user_id} and project_id=#{project_id}
+		</where>
+	</select>
 	<insert id="addProject" parameterType="weekn.wreport.model.ProjectModel">
 		insert into project(name,level,up_id,team_id) values (#{name}, #{level}, #{up_id}, #{team_id})
 	</insert>
