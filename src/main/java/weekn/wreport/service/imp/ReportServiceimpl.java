@@ -1,5 +1,6 @@
 package weekn.wreport.service.imp;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -76,24 +77,35 @@ public class ReportServiceimpl {
 	}
 
 	
-	public List<ProjectModel> getReportWithTeam(SysUserModel user ) throws JsonProcessingException {
+	public List<ProjectModel> getReportWithTeam(SysUserModel user ,int team_id,Long time) throws JsonProcessingException {
+		System.out.println("time---"+time);
+		Map<String, Long> time_map=TimeUtils.getWeeknStartEnd(time);
 		
-		List<ProjectModel> report_list=report_mapper.getReportWithTeam(user.getTeam_id());
+		List<ProjectModel> report_list=report_mapper.getReportWithTeam(user.getTeam_id(),time_map.get("start"),time_map.get("end"));
+		
 		List<Integer> project_id_list=clearProject(report_list);
-		List<ProjectRoleModel> pr_list=project_mapper.getProjectRolesA2ProjectId(project_id_list);
-		System.out.println(JsonUtils.encode(pr_list));
-		Map<Integer,ProjectRoleModel> pr_map=new HashMap<Integer, ProjectRoleModel>();
-		for(ProjectRoleModel pr:pr_list) {
-			int id=pr.getProject_id();
-			if(pr.getRoles()!=null && pr.getRoles().size()>0) {
-				pr_map.put(id, pr);
-			}
+		
+		if(project_id_list==null||project_id_list.size()==0) {
 			
+			return new ArrayList();
+		}else {
+			
+			List<ProjectRoleModel> pr_list=project_mapper.getProjectRolesA2ProjectId(project_id_list);
+			System.out.println(JsonUtils.encode(pr_list));
+			Map<Integer,ProjectRoleModel> pr_map=new HashMap<Integer, ProjectRoleModel>();
+			for(ProjectRoleModel pr:pr_list) {
+				int id=pr.getProject_id();
+				if(pr.getRoles()!=null && pr.getRoles().size()>0) {
+					pr_map.put(id, pr);
+				}
+				
+			}
+			getUniqueReport(report_list,pr_map);
+			System.out.println("getReportWithTeam------------");
+			System.out.println(JsonUtils.encode(report_list));
+			return report_list;
 		}
-		getUniqueReport(report_list,pr_map);
-		System.out.println("getReportWithTeam------------");
-		System.out.println(JsonUtils.encode(report_list));
-		return report_list;
+		
 	}
 
 	

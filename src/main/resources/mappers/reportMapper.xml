@@ -91,11 +91,11 @@
 		p2.name as name2,p2.id as id2, 
 		r2.id as report_id2,r2.user_id as user_id2,r2.user_name as user_name2,r2.general as general2,r2.outcome as outcome2,r2.problem as problem2,r2.plan as plan2
 		FROM project p0
-		LEFT join report r0 on p0.id = r0.project_id    
+		LEFT join report r0 on p0.id = r0.project_id   and r0.time BETWEEN #{starttime} AND #{endtime} 
 		LEFT join project p1 on p0.id = p1.up_id and p1.level=1 and p1.team_id=#{team_id} 
-		LEFT join report r1 on p1.id = r1.project_id    
+		LEFT join report r1 on p1.id = r1.project_id    and r1.time BETWEEN #{starttime} AND #{endtime}
 		LEFT join project p2 on p1.id = p2.up_id and p2.level=2 and p2.team_id=#{team_id}
-		LEFT join report r2 on p2.id = r2.project_id   
+		LEFT join report r2 on p2.id = r2.project_id and r2.time BETWEEN #{starttime} AND #{endtime}  
 		where p0.level =0 and p0.team_id=#{team_id}
 
 </select>

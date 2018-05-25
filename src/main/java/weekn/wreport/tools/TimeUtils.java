@@ -8,7 +8,7 @@ import java.util.Map;
 public class TimeUtils {
 	public static void main(String[] args) {
 		Long a=new Date().getTime();
-		getWeeknStartEnd(a);
+//		System.out.println(getWeeknStartEnd(1523178301899L).get("start"));
 	}
    static public Long getCurrentTimeStamp() {
 	   return new Date().getTime();
@@ -16,7 +16,14 @@ public class TimeUtils {
    static public Map<String, Long> getWeeknStartEnd(Long timestamp) {
 	   Calendar cal = Calendar.getInstance();
 	   cal.setTime(new Date(timestamp));
-	   int w =cal.get(Calendar.DAY_OF_WEEK)-1;//这个星期从周日开始的，所以减1
+	   int w =cal.get(Calendar.DAY_OF_WEEK);//这个星期从周日开始的，所以减1
+//	   System.out.println(w);
+	   if(w==1) {
+		   w=7;
+	   }else {//这个星期从周日开始的，所以减1
+		   w =w-1;
+	   }
+	   
 	   
 	   cal.set(Calendar.HOUR_OF_DAY, 0);
 	   cal.set(Calendar.MINUTE, 0);

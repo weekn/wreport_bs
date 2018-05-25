@@ -111,15 +111,21 @@ public class ReportController {
 	 * @throws MyException_noLogin
 	 */
 	@RequestMapping(value = "/report/team", method = RequestMethod.GET)
-	public ResponseModel getTeamReport(HttpServletRequest request) throws JsonProcessingException, MyException_noLogin {// POST
+	public ResponseModel getTeamReport(@RequestParam(value = "time", required = false) Long time,
+			HttpServletRequest request) throws JsonProcessingException, MyException_noLogin {// POST
 																														// /session
 																														// #
 																														// 创建新的会话（登录）
 		System.out.println("ReportController-getTeamReport");
-		ResponseModel response = new ResponseModel();
-
+		if(time==null) {
+			time=new Date().getTime();
+			System.out.println("time----null-----------------------");
+		}
+		
 		SysUserModel user = new MySecurityManager().start(request, redis_s).end();
-		response.setResponse(report_server.getReportWithTeam(user));
+		
+		ResponseModel response = new ResponseModel();
+		response.setResponse(report_server.getReportWithTeam(user,user.getTeam_id(),time));
 
 		return response;
 
