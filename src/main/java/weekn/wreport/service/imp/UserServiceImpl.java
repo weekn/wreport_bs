@@ -1,13 +1,20 @@
 package weekn.wreport.service.imp;
 
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import weekn.wreport.dao.UserDao;
 import weekn.wreport.model.SysUserModel;
+import weekn.wreport.model.TeamInfoModel;
 import weekn.wreport.tools.JsonUtils;
 
 @Service
@@ -37,5 +44,17 @@ public class UserServiceImpl {
 		
        
     }
+	
+	public List<TeamInfoModel> getUserTeamInfo(SysUserModel user) {
+
+		List<TeamInfoModel> r=mapper.getUserTeamMate(user.getTeam_id());
+//		try {
+//			System.out.println(JsonUtils.encode(r));
+//		} catch (JsonProcessingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		return r;
+	}
 	
 }

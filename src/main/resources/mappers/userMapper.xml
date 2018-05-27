@@ -9,11 +9,25 @@
             <result column="name" property="name"/>
     </collection>
   </resultMap>
+  
+  <resultMap id="userTeamInfoMap" type="weekn.wreport.model.TeamInfoModel" >
+    <result column="id" property="team_id"  />
+    <result column="name" property="team_name"  />
+    <result column="team_id" property="team_id"  />
+    <collection property="members" ofType="weekn.wreport.model.SysUserModel">
+    	<result column="user_id" property="id"/>
+        <result column="username" property="username"/>
+    </collection>
+  </resultMap>
 <select id="findByUserName" parameterType="String" resultMap="userMap">
         select u.* ,r.name from sys_user u
         LEFT JOIN sys_role_user sru on u.id= sru.sys_user_id
         LEFT JOIN sys_role r on sru.sys_role_id=r.id
         where username= #{username} and password=#{password} 
+</select>
+
+<select id="getUserTeamMate"  resultMap="userTeamInfoMap">
+	select t.*,u.id as user_id,u.username from team t left join sys_user u on t.id=u.team_id where t.id=1
 </select>
 
 
