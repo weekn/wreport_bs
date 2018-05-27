@@ -60,14 +60,29 @@
 		</where>
 		
 	</select>
+	
+	<select id="getProjectRolesA2TeamId" parameterType="java.util.List" resultMap="project_role_Map">
+		SELECT pr.id as id,p.name as project_name,u.username as user_name,p.id as project_id ,u.id as user_id,pr.role  as role 
+		FROM project p 
+		join project_role pr on p.id =pr.project_id 
+		join sys_user u on pr.user_id=u.id
+		where p.team_id = #{team_id}
+		
+	</select>
 	<select id="getProjectRoles" resultType="weekn.wreport.model.PRoleModel">
 		SELECT  * from project_role 
 		<where>
 			user_id=#{user_id} and project_id=#{project_id}
 		</where>
 	</select>
-	<insert id="addProject" parameterType="weekn.wreport.model.ProjectModel">
-		insert into project(name,level,up_id,team_id) values (#{name}, #{level}, #{up_id}, #{team_id})
+	<insert id="addProject" parameterType="weekn.wreport.model.ProjectModel"  useGeneratedKeys="true" keyProperty="id">
+		insert into project(name,level,up_id,team_id,plan_start_time,plan_end_time) 
+		values (#{name}, #{level}, #{up_id}, #{team_id},#{plan_start_time},#{plan_end_time} )
+	</insert>
+	
+	<insert id="addProjectRoles" parameterType="weekn.wreport.model.PRoleModel"  >
+		insert into project_role(project_id,user_id,role) 
+		values (#{project_id}, #{user_id}, #{role})
 	</insert>
 	
 	<delete id="deleteProject">

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import weekn.wreport.dao.ProjectDao;
 import weekn.wreport.model.ProjectModel;
 import weekn.wreport.model.ReportModel;
@@ -18,6 +20,7 @@ import weekn.wreport.security.MyException_noLogin;
 import weekn.wreport.security.MySecurityManager;
 import weekn.wreport.service.RedisService;
 import weekn.wreport.service.imp.ProjectServiceimpl;
+import weekn.wreport.tools.JsonUtils;
 
 @RestController
 public class ProjectController {
@@ -39,6 +42,13 @@ public class ProjectController {
 		ResponseModel response=new ResponseModel();
 		
 		project.setTeam_id(user.getTeam_id());
+		
+		try {
+			System.out.println(JsonUtils.encode(project));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		response.setResponse(project_service.addProject(project));
 		response.setMessage("新建成功");
 		
@@ -53,7 +63,7 @@ public class ProjectController {
 		System.out.println("ProjectController-getRunningProject");
 		ResponseModel response=new ResponseModel();
 		
-		response.setResponse(project_service.getRunningProject());
+		response.setResponse(project_service.getRunningProject(1));
 		
 		return  response;
 	

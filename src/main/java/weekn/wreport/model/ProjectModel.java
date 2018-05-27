@@ -8,12 +8,26 @@ public class ProjectModel {
 	private int up_id;
 	private int level;
 	private int team_id;
+	private double plan_start_time;
+	private double plan_end_time;
 	private List<ReportModel> reports;
 	private ReportModel report;
 	private List<PRoleModel> roles;
 	private List<ProjectModel> sub;
 	
 	
+	public double getPlan_start_time() {
+		return plan_start_time;
+	}
+	public void setPlan_start_time(double plan_start_time) {
+		this.plan_start_time = plan_start_time;
+	}
+	public double getPlan_end_time() {
+		return plan_end_time;
+	}
+	public void setPlan_end_time(double plan_end_time) {
+		this.plan_end_time = plan_end_time;
+	}
 	public List<PRoleModel> getRoles() {
 		return roles;
 	}

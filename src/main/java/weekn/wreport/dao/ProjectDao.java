@@ -22,5 +22,8 @@ public interface  ProjectDao {
 	public void deleteProject(@Param("id") int id);
 	
 	public List<ProjectRoleModel> getProjectRolesA2ProjectId(List<Integer> project_id);
+	public List<ProjectRoleModel> getProjectRolesA2TeamId(@Param("team_id")int team_id);
+	
 	public PRoleModel getProjectRoles(@Param("project_id")int project_id,@Param("user_id")int user_id);
+	public void addProjectRoles(PRoleModel role);
 }

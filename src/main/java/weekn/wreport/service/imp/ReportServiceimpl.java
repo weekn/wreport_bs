@@ -91,7 +91,7 @@ public class ReportServiceimpl {
 		}else {
 			
 			List<ProjectRoleModel> pr_list=project_mapper.getProjectRolesA2ProjectId(project_id_list);
-			System.out.println(JsonUtils.encode(pr_list));
+			
 			Map<Integer,ProjectRoleModel> pr_map=new HashMap<Integer, ProjectRoleModel>();
 			for(ProjectRoleModel pr:pr_list) {
 				int id=pr.getProject_id();
