@@ -56,6 +56,31 @@ public class ProjectController {
 	
 	}
 	/**
+	 * 重设，修改项目
+	 * @throws MyException_noLogin 
+	 */
+	@RequestMapping(value = "/project", method = RequestMethod.PUT)
+	public ResponseModel resetReport(@RequestBody ProjectModel project, HttpServletRequest request) throws MyException_noLogin {// POST /session # 创建新的会话（登录）
+		System.out.println("projectController-resetReport");
+		
+		SysUserModel user = new MySecurityManager().start(request, redis_s).end();
+		ResponseModel response=new ResponseModel();
+		
+		project.setTeam_id(user.getTeam_id());
+		
+		try {
+			System.out.println(JsonUtils.encode(project));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		response.setResponse(project_service.resetProject(project));
+		response.setMessage("新建成功");
+		
+		return  response;
+	
+	}
+	/**
 	 * 获得用户项目
 	 */
 	@RequestMapping(value = "/project", method = RequestMethod.GET)

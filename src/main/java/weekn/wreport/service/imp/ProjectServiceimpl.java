@@ -84,7 +84,24 @@ public class ProjectServiceimpl {
 			role.setProject_id(pro.getId());
 			project_mapper.addProjectRoles(role);
 		}
-		return project_mapper.getRunningProject();
+		return getRunningProject(pro.getTeam_id());
+	}
+	
+	public List<ProjectModel> resetProject(ProjectModel pro) {
+		project_mapper.updateProject(pro);
+		project_mapper.deleteProjectRolesA2ProId(pro.getId());
+		for(PRoleModel role:pro.getRoles()) {
+			role.setProject_id(pro.getId());
+			project_mapper.addProjectRoles(role);
+		}
+		List<ProjectModel> r= getRunningProject(pro.getTeam_id());
+		try {
+			System.out.println(JsonUtils.encode(r));
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return r;
 	}
 	
 	public List<ProjectModel> deleteProject(int id) {

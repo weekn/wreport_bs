@@ -163,6 +163,7 @@ public class ReportServiceimpl {
 		//如果有总结性的report，就让改report为最终的report，并且general设为1
 		//获得总结report通过私有方法summarizeReport
 		//通过参数pr_map，给project设定用户在项目中的角色
+		//如果子项没有角色信息，将父项的角色信息付给子项
 		
 		Iterator<ProjectModel> iter0 = p.iterator();
 		while(iter0.hasNext()){ 
@@ -171,6 +172,7 @@ public class ReportServiceimpl {
 			if(pm0.getReports()!=null&&pm0.getReports().size()>0) {
 				pm0.setReport(getSummarizeReport(pm0.getReports(),pm0.getId()));
 				if(pr_map.containsKey(pm0.getId())) {//设定项目的角色
+					
 					pm0.setRoles(pr_map.get(pm0.getId()).getRoles());
 				}
 				
@@ -184,7 +186,10 @@ public class ReportServiceimpl {
 					if(pm1.getReports()!=null&&pm1.getReports().size()>0) {
 						pm1.setReport(getSummarizeReport(pm1.getReports(),pm1.getId()));
 						if(pr_map.containsKey(pm1.getId())) {
+							
 							pm1.setRoles(pr_map.get(pm1.getId()).getRoles());
+						}else if(pr_map.containsKey(pm0.getId())){
+							pm1.setRoles(pr_map.get(pm0.getId()).getRoles());//将父项的角色信息付给子项
 						}
 					}
 					if(pm1.getSub().size()>0){
@@ -195,7 +200,12 @@ public class ReportServiceimpl {
 							if(pm2.getReports()!=null&&pm2.getReports().size()>0) {
 								pm2.setReport(getSummarizeReport(pm2.getReports(),pm2.getId()));
 								if(pr_map.containsKey(pm2.getId())) {
-									pm2.setRoles(pr_map.get(pm2.getId()).getRoles());
+									ProjectRoleModel proles2=pr_map.get(pm2.getId());
+									pm2.setRoles(proles2.getRoles());
+								}else if(pr_map.containsKey(pm1.getId())){
+									pm2.setRoles(pr_map.get(pm1.getId()).getRoles());//将父项1的角色信息付给子项
+								}else if(pr_map.containsKey(pm0.getId())){
+									pm2.setRoles(pr_map.get(pm0.getId()).getRoles());//将父项1的角色信息付给子项
 								}
 							}
 						}

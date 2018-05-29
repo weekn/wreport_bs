@@ -7,15 +7,18 @@
 
 		<result column="id0" property="id" />
 		<result column="name0" property="name" />
-
+		<result column="plan_start_time0" property="plan_start_time" />
+		<result column="plan_end_time0" property="plan_end_time" />
 		<collection property="sub" ofType="weekn.wreport.model.ProjectModel">
 			<result column="id1" property="id" />
 			<result column="name1" property="name" />
-
+			<result column="plan_start_time1" property="plan_start_time" />
+			<result column="plan_end_time1" property="plan_end_time" />
 			<collection property="sub" ofType="weekn.wreport.model.ProjectModel">
 				<result column="id2" property="id" />
 				<result column="name2" property="name" />
-
+				<result column="plan_start_time2" property="plan_start_time" />
+				<result column="plan_end_time2" property="plan_end_time" />
 			</collection>
 		</collection>
 	</resultMap>
@@ -35,8 +38,9 @@
 
 
 	<select id="getRunningProject" resultMap="projectMap">
-		select p0.name as name0,p0.id as id0 ,p1.name as name1,p1.id as id1, p2.name
-		as name2,p2.id as id2
+		select p0.name as name0,p0.id as id0 ,p0.plan_start_time as plan_start_time0,p0.plan_end_time as plan_end_time0,
+		p1.name as name1,p1.id as id1, p1.plan_start_time as plan_start_time1,p1.plan_end_time as plan_end_time1,
+		p2.name as name2,p2.id as id2,p2.plan_start_time as plan_start_time2,p2.plan_end_time as plan_end_time2
 		from project p0
 		LEFT join project p1 on p0.id = p1.up_id and p1.level=1
 		LEFT join project p2 on p1.id = p2.up_id and p2.level=2
@@ -80,11 +84,20 @@
 		values (#{name}, #{level}, #{up_id}, #{team_id},#{plan_start_time},#{plan_end_time} )
 	</insert>
 	
+	<update id="updateProject" parameterType="weekn.wreport.model.ProjectModel">
+		UPDATE project SET name=#{name}, plan_start_time=#{plan_start_time}, plan_end_time=#{plan_end_time}
+		<where>
+			id=#{id}
+		</where>
+	</update>
+	
 	<insert id="addProjectRoles" parameterType="weekn.wreport.model.PRoleModel"  >
 		insert into project_role(project_id,user_id,role) 
 		values (#{project_id}, #{user_id}, #{role})
 	</insert>
-	
+	<delete id="deleteProjectRolesA2ProId">
+		delete from project_role where project_id = #{project_id}
+	</delete>
 	<delete id="deleteProject">
 		delete from project  where id in (
 		select id from 

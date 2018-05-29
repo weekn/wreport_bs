@@ -18,6 +18,7 @@ public interface  ProjectDao {
 	public List<ProjectModel> getRunningProject();
 	
 	public void addProject(ProjectModel project);
+	public void updateProject(ProjectModel project);
 	
 	public void deleteProject(@Param("id") int id);
 	
@@ -26,4 +27,5 @@ public interface  ProjectDao {
 	
 	public PRoleModel getProjectRoles(@Param("project_id")int project_id,@Param("user_id")int user_id);
 	public void addProjectRoles(PRoleModel role);
+	public void deleteProjectRolesA2ProId(@Param("project_id")int project_id);
 }
